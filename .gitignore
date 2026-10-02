@@ -1,0 +1,78 @@
+# ====================================================================
+# 1. OS & IDE GENERAL
+# ====================================================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.user
+*.sln.docstates
+.vs/
+
+# ====================================================================
+# 2. .NET 10 / C# 
+# ====================================================================
+# Build and Output Directories
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+/publish/
+/releases/
+
+# User-specific and Local Cache Files
+*.userosscache
+.tools/
+.dotnet/
+
+# NuGet Packages (Automatically restored during build)
+*.nupkg
+**/packages/*
+!**/packages/repository.config
+
+# Local Configuration and Secret Files
+appsettings.Development.json
+appsettings.Local.json
+*.secrets.json
+
+# OpenAPI Build-time Artifacts
+**/obj/GetDocument.Insider/
+
+# ====================================================================
+# 3. NEXT.JS / NODE.JS
+# ====================================================================
+# Dependency Directories
+node_modules/
+/npm-debug.log*
+/yarn-error.log*
+
+# Next.js Build Outputs
+.next/
+out/
+dist/
+
+# Frontend Tooling Caches
+.turbo/
+.build/
+.cache/
+
+# Environment Variable Files (Contains Secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ====================================================================
+# 4. TESTING & CODE COVERAGE
+# ====================================================================
+# .NET Test Artifacts
+TestResults/
+*.codecoverage
+
+# Frontend Test Artifacts (Jest, Cypress, Playwright)
+/cypress/videos/
+/cypress/screenshots/
+coverage/
+.nyc_output/

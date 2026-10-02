@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RouteAnalytics.Api/RouteAnalytics.Api.csproj" />
+  <Project Path="RouteAnalytics.Domain/RouteAnalytics.Domain.csproj" />
+  <Project Path="RouteAnalytics.Infrastructure/RouteAnalytics.Infrastructure.csproj" />
+</Solution>
