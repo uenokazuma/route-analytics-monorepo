@@ -6,19 +6,18 @@ namespace RouteAnalytics.Api.Handlers;
 
 public class RoutingHandlers
 {
-    public record CalculateRouteRequest(int SourceId, int TargetId);
     public record SaveRouteRequest(int SourceId, int TargetId, string ModeType, double TotalCost, List<TransportNetwork> segments);
 
-    public static async Task<IResult> CalculateRoute(int sourceId, int targetId, ISpatialRoutingService routingService)
+    public static async Task<IResult> CalculateRoute(int sourceId, int targetId, string? modeType = null, ISpatialRoutingService routingService = null)
     {
         try
         {
-            var route = await routingService.CalculateRouteAsync(sourceId, targetId);
+            var route = await routingService.CalculateRouteAsync(sourceId, targetId, modeType);
 
             if(route == null || route.Count == 0)
             {
                 var errorResponse = ApiResponse<object>.CreateFailure("No route found between the specified points.", default);
-                return Results.NotFound(errorResponse);
+                return Results.Ok(errorResponse);
             }
 
             var response = ApiResponse<object>.CreateSuccess("Route calculated successfully.", route);
@@ -35,12 +34,12 @@ public class RoutingHandlers
     {
         try
         {
-            var savedRoute = await routingService.SaveRouteHistoryAsync(request.SourceId, request.TargetId, request.ModeType, request.TotalCost, request.segments);
+            var savedRoute = await routingService.SaveRouteAsync(request.SourceId, request.TargetId, request.ModeType, request.TotalCost, request.segments);
 
             if(savedRoute == null)
             {
                 var errorResponse = ApiResponse<object>.CreateFailure("Failed to save the route history.", default);
-                return Results.BadRequest(errorResponse);
+                return Results.Ok(errorResponse);
             }
 
             var response = ApiResponse<object>.CreateSuccess("Route history saved successfully.", savedRoute);
@@ -53,6 +52,21 @@ public class RoutingHandlers
         }
     }
 
+	public static async Task<IResult> DeleteRoute(Guid routeId, ISpatialRoutingService routingService)
+	{
+		try
+		{
+			await routingService.DeleteRouteAsync(routeId);
+			var response = ApiResponse<object>.CreateSuccess("Route history deleted successfully.", default);
+			return Results.Ok(response);
+		}
+		catch (Exception ex)
+		{
+			var errorResponse = ApiResponse<object>.CreateFailure($"An error occurred while deleting the route history: {ex.Message}", default);
+			return Results.Json(errorResponse, statusCode: 500);
+		}
+	}
+
     public static async Task<IResult> GetRouteHistory(ISpatialRoutingService routingService)
     {
         try
@@ -62,7 +76,7 @@ public class RoutingHandlers
             if(routeHistory == null || !routeHistory.Any())
             {
                 var errorResponse = ApiResponse<object>.CreateFailure("No route history found.", default);
-                return Results.NotFound(errorResponse);
+                return Results.Ok(errorResponse);
             }
 
             var response = ApiResponse<object>.CreateSuccess("Route history retrieved successfully.", routeHistory);

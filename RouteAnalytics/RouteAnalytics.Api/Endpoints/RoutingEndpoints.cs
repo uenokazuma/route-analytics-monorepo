@@ -17,6 +17,7 @@ public static class RoutingEndpoints
 
         group.MapGet("/routes/calculate", RoutingHandlers.CalculateRoute);
         group.MapPost("/routes/save", RoutingHandlers.SaveRoute);
+		group.MapDelete("/routes/delete/{routeId:guid}", RoutingHandlers.DeleteRoute);
         group.MapGet("/routes/history", RoutingHandlers.GetRouteHistory);
     }
 }

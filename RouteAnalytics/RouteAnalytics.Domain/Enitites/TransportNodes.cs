@@ -2,7 +2,7 @@ using NetTopologySuite.Geometries;
 
 namespace RouteAnalytics.Domain.Entities;
 
-public class TransportNode
+public class TransportNodes
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

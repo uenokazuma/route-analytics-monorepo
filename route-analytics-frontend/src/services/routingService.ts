@@ -1,40 +1,31 @@
-import { ApiResponse, LineStringGeometry } from "../types/routing";
-
-const BASE_URL = "https://api.openrouteservice.org/v2/directions/driving-car";
+import { apiClient } from "./apiClient";
+import { ApiResponse, SaveRoutePayload, TransportNetworkSegment } from "../types/routing";
+import type { RouteHistoryItem } from "@/types/routing";
 
 export const routingService = {
-    async calculateRoute(startLon: number, startLat: number, endLon: number, endLat: number): Promise<ApiResponse<LineStringGeometry[]>> {
-        const url = `${BASE_URL}?calculate?startLon=${startLon}&startLat=${startLat}&endLon=${endLon}&endLat=${endLat}`;
+    
+    // GET: /api/routes/calculate?sourceId=...&targetId=...
+    async calculateRoute(sourceId: number, targetId: number, modeType?: string): Promise<ApiResponse<TransportNetworkSegment[]>> {
+      const params = new URLSearchParams({ sourceId: String(sourceId), targetId: String(targetId) });
+      if (modeType) params.set('modeType', modeType);
 
-        const response = await fetch(url)
-        if (!response.ok) {
-            throw new Error(`Error fetching route: ${response.statusText}`);
-        }
-
-        return response.json()
+      return apiClient.get<ApiResponse<TransportNetworkSegment[]>>(
+        `/api/routes/calculate?${params.toString()}`
+      );
     },
 
-    async saveRoute(payload: {
-        routeName: string;
-        startLon: number;
-        startLat: number;
-        endLon: number;
-        endLat: number;
-        geometryData: LineStringGeometry[];
-    }): Promise<ApiResponse<null>> {
-        
-        const res = await fetch(`${BASE_URL}/save-route`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+  // POST: /api/routes/save
+  async saveRoute(payload: SaveRoutePayload): Promise<ApiResponse<null>> {
+    return apiClient.post<ApiResponse<null>>("/api/routes/save", payload);
+  },
 
-        if (!res.ok) {
-            throw new Error(`Error saving route: ${res.statusText}`);
-        }
+  // GET: /api/routes/history
+  async getRouteHistory(): Promise<ApiResponse<RouteHistoryItem[]>> {
+    return apiClient.get<ApiResponse<RouteHistoryItem[]>>("/api/routes/history");
+  },
 
-        return res.json();
-    }
-}
+  // DELETE: /api/routes/delete/{routeId}
+  async deleteRouteHistory(routeId: string): Promise<ApiResponse<null>> {
+    return apiClient.delete<ApiResponse<null>>(`/api/routes/delete/${encodeURIComponent(routeId)}`);
+  }
+};

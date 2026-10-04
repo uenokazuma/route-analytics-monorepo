@@ -7,15 +7,15 @@ namespace RouteAnalytics.Api.Handlers;
 
 public static class NodeHandlers
 {
-    public static async Task<IResult> SearchNodes(string query, ISpatialRoutingService routingService)
+    public static async Task<IResult> SearchNodes(string query, string? mode, ISpatialRoutingService routingService)
     {
         try
         {
-            var nodes = await routingService.SearchNodesAsync(query);
+            var nodes = await routingService.SearchNodesAsync(query, mode);
             if (nodes == null || !nodes.Any())
             {
                 var errorResponse = ApiResponse<object>.CreateFailure("No nodes found matching the query.", default);
-                return Results.NotFound(errorResponse);
+                return Results.Ok(errorResponse);
             }
 
             return Results.Ok(ApiResponse<object>.CreateSuccess("Nodes retrieved successfully.", nodes));
@@ -34,7 +34,7 @@ public static class NodeHandlers
             if (node == null)
             {
                 var errorResponse = ApiResponse<object>.CreateFailure("No node found at the specified location.", default);
-                return Results.NotFound(errorResponse);
+                return Results.Ok(errorResponse);
             }
 
             return Results.Ok(ApiResponse<object>.CreateSuccess("Node retrieved successfully.", node));

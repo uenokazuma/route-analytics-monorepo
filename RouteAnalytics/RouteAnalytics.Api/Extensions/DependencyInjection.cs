@@ -13,10 +13,23 @@ public static class DependencyInjection
             options.UseNpgsql(connectionString, npgsqlOptions =>
             {
                 npgsqlOptions.UseNetTopologySuite();
-            })
+            }).UseSnakeCaseNamingConvention()
         );
 
-        services.AddScoped<ISpatialRoutingService, SpatialRoutingService>();
+		services.ConfigureHttpJsonOptions(options =>
+		{
+			options.SerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals;
+		});
+
+		string targetNamespace = "RouteAnalytics.Infrastructure.Repositories";
+		var repositoryTypes = typeof(AppDbContext).Assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.Namespace == targetNamespace);
+
+		foreach (var repositoryType in repositoryTypes)
+		{
+			services.AddScoped(repositoryType);
+		}
+
+        services.AddScoped <ISpatialRoutingService, SpatialRoutingService>();
 
         services.AddCors(options =>
         {

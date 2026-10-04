@@ -7,7 +7,7 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
-    public DbSet<TransportNode> TransportNodes => Set<TransportNode>();
+    public DbSet<TransportNodes> TransportNodes => Set<TransportNodes>();
     public DbSet<TransportNetwork> TransportNetworks => Set<TransportNetwork>();
     public DbSet<SavedRoute> SavedRoutes => Set<SavedRoute>();
 
@@ -16,13 +16,13 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasPostgresExtension("postgis");
 
-        modelBuilder.Entity<TransportNode>(entity =>
+        modelBuilder.Entity<TransportNodes>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.ModeType).IsRequired();
             entity.Property(e => e.CountryCode).IsRequired();
-            entity.Property(e => e.IataCode).IsRequired();
+            entity.Property(e => e.IataCode);
             entity.Property(e => e.GeomPoint).HasColumnType("geometry(Point, 4326)").IsRequired();
         });
 

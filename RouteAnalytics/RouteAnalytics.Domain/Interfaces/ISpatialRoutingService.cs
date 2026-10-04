@@ -1,5 +1,6 @@
 using System.Collections;
 using NetTopologySuite.Geometries;
+using RouteAnalytics.Domain.DTOs;
 using RouteAnalytics.Domain.Entities;
 
 namespace RouteAnalytics.Domain.Interfaces
@@ -7,14 +8,15 @@ namespace RouteAnalytics.Domain.Interfaces
     public interface ISpatialRoutingService
     {
         // Node Operations
-        Task<IEnumerable<TransportNode>> SearchNodesAsync(string query);
-        Task<TransportNode?> GetNearestNodeAsync(double lat, double lng);
+        Task<IEnumerable<TransportNodeDto>> SearchNodesAsync(string query, string? modeType = null);
+        Task<TransportNodes?> GetNearestNodeAsync(double lat, double lng);
 
         // Route Operations
-        Task<List<TransportNetwork>> CalculateRouteAsync(int sourceId, int targetId);
+        Task<List<TransportNetwork>> CalculateRouteAsync(int sourceId, int targetId, string? modeType = null);
 
         //History Operations
-        Task<SavedRoute> SaveRouteHistoryAsync(int sourceId, int targetId, string modeType, double cost, List<TransportNetwork> segments);
-        Task<IEnumerable<SavedRoute>> GetRouteHistoryAsync();
+        Task<SavedRouteDto> SaveRouteAsync(int sourceId, int targetId, string modeType, double cost, List<TransportNetwork> segments);
+		Task DeleteRouteAsync(Guid routeId);
+        Task<IEnumerable<SavedRouteDto>> GetRouteHistoryAsync();
     }
 }

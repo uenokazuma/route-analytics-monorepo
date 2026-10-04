@@ -12,6 +12,6 @@ public class TransportNetwork
     public int? Target { get; set; }
     public double Cost { get; set; }
     public double ReverseCost { get; set; }
-    public LineString Geom { get; set; } = null!;
+    public string Geom { get; set; } = null!;
     
 }
